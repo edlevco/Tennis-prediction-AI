@@ -27,7 +27,11 @@ df = load_and_clean("data/atp_matches_2024.csv")
 df["rank_diff"] = df["opponent_rank"] - df["player_rank"]
 df["ace_diff"] = df["player_ace"] - df["opponent_ace"]
 
-X = df[["rank_diff", "ace_diff"]]   # features
+# One-hot encode surface
+surface_encoded = pd.get_dummies(df["surface"], drop_first=True)
+
+# Merge with existing features
+X = pd.concat([df[["rank_diff", "ace_diff"]], surface_encoded], axis=1)
 y = df["target"]        # target: 1 = win, 0 = loss
 
 print(X.shape, y.shape)  # (n_samples, 2) and (n_samples,)
@@ -69,7 +73,6 @@ print("Accuracy:", accuracy_score(y_test, y_pred))
 # plt.legend()
 # plt.grid(True)
 # plt.show()
-
 
 
 
